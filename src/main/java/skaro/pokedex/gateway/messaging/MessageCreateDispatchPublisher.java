@@ -12,9 +12,10 @@ import org.springframework.stereotype.Service;
 import discord4j.discordjson.json.MessageData;
 import discord4j.discordjson.json.gateway.MessageCreate;
 import reactor.core.publisher.Mono;
+import skaro.pokedex.sdk.messaging.DiscordTextEventMessage;
 
 @Service
-public class NewMessagePublisher implements DispatchPublisher<MessageCreate> {
+public class MessageCreateDispatchPublisher implements DispatchPublisher<MessageCreate> {
 
 	private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	
@@ -22,7 +23,7 @@ public class NewMessagePublisher implements DispatchPublisher<MessageCreate> {
 	private Queue newMessageQueue;
 	private MessagePostProcessor postProcessor;
 	
-	public NewMessagePublisher(RabbitTemplate template, Queue newMessageQueue, MessagePostProcessor postProcessor) {
+	public MessageCreateDispatchPublisher(RabbitTemplate template, Queue newMessageQueue, MessagePostProcessor postProcessor) {
 		this.template = template;
 		this.newMessageQueue = newMessageQueue;
 		this.postProcessor = postProcessor;
@@ -34,8 +35,19 @@ public class NewMessagePublisher implements DispatchPublisher<MessageCreate> {
 	}
 	
 	private void queueMessageEvent(MessageData message) {
-		template.convertAndSend(newMessageQueue.getName(), (Object)message.content(), postProcessor);
-		LOG.info("Send message: {}", message.content());
+		DiscordTextEventMessage messageToQueue = toEventMessage(message);
+		template.convertAndSend(newMessageQueue.getName(), messageToQueue, postProcessor);
+		LOG.info("Send message: {}", messageToQueue.getContent());
+	}
+	
+	private DiscordTextEventMessage toEventMessage(MessageData message) {
+		DiscordTextEventMessage eventMessage = new DiscordTextEventMessage();
+		eventMessage.setChannelId(message.channelId());
+		eventMessage.setContent(message.content());
+		eventMessage.setAuthorId(message.author().id());
+		message.guildId().toOptional().ifPresent(eventMessage::setGuildId);
+		
+		return eventMessage;
 	}
 	
 }
