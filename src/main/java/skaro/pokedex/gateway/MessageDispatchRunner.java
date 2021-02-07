@@ -1,5 +1,7 @@
 package skaro.pokedex.gateway;
 
+import static java.util.function.Predicate.not;
+
 import java.lang.invoke.MethodHandles;
 
 import org.slf4j.Logger;
@@ -31,9 +33,18 @@ public class MessageDispatchRunner implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		gatewayClient.dispatch().ofType(MessageCreate.class)
+			.filter(not(this::userIsBot))
 			.flatMap(publisher::publishEvent)
 			.onErrorResume(this::handleError)
 			.subscribe();
+	}
+	
+	public boolean userIsBot(MessageCreate messageCreateEvent) {
+		return messageCreateEvent.message()
+				.author()
+				.bot()
+				.toOptional()
+				.orElse(false);
 	}
 	
 	private Mono<Void> handleError(Throwable error) {

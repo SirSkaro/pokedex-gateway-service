@@ -15,9 +15,9 @@ import discord4j.gateway.GatewayClient;
 public class GatewayConnectRunner implements CommandLineRunner {
 
 	private GatewayClient gatewayClient;
-	private DiscordConfigurationProperties discordConfig;
+	private DiscordGatewayConfigurationProperties discordConfig;
 
-	public GatewayConnectRunner(GatewayClient gatewayClient, DiscordConfigurationProperties discordConfig) {
+	public GatewayConnectRunner(GatewayClient gatewayClient, DiscordGatewayConfigurationProperties discordConfig) {
 		this.gatewayClient = gatewayClient;
 		this.discordConfig = discordConfig;
 	}

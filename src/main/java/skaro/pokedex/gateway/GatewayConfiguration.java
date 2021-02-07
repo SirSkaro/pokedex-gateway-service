@@ -23,20 +23,20 @@ import discord4j.gateway.payload.JacksonPayloadReader;
 import discord4j.gateway.payload.JacksonPayloadWriter;
 import discord4j.gateway.payload.PayloadReader;
 import discord4j.gateway.payload.PayloadWriter;
+import skaro.pokedex.sdk.DiscordConfigurationProperties;
 
 @Configuration
 public class GatewayConfiguration {
-	private static final String DISCORD_PROPERTIES_PREFIX = "discord";
 	
 	@Bean
-	@ConfigurationProperties(DISCORD_PROPERTIES_PREFIX)
+	@ConfigurationProperties(DiscordConfigurationProperties.DISCORD_PROPERTIES_PREFIX)
 	@Valid
-	public DiscordConfigurationProperties getDiscordConfigurationProperties() {
-		return new DiscordConfigurationProperties();
+	public DiscordGatewayConfigurationProperties getDiscordConfigurationProperties() {
+		return new DiscordGatewayConfigurationProperties();
 	}
 	
 	@Bean
-	public GatewayOptions getGatewayOptions(DiscordConfigurationProperties discordConfig) {
+	public GatewayOptions getGatewayOptions(DiscordGatewayConfigurationProperties discordConfig) {
 		ReactorResources reactorResources = ReactorResources.create();
         GatewayReactorResources gatewayReactorResources = new GatewayReactorResources(reactorResources);
         JacksonResources jacksonResources = JacksonResources.create();

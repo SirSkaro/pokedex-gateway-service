@@ -8,9 +8,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
-public class DiscordConfigurationProperties {
-	@NotEmpty
-	private String token;
+import skaro.pokedex.sdk.DiscordConfigurationProperties;
+
+public class DiscordGatewayConfigurationProperties extends DiscordConfigurationProperties {
 	@NotNull
 	@PositiveOrZero
 	private Integer shardIndex;
@@ -21,12 +21,6 @@ public class DiscordConfigurationProperties {
 	private URI gatewayBaseUri;
 	private Map<String, @NotEmpty String> gatewayParams;
 	
-	public String getToken() {
-		return token;
-	}
-	public void setToken(String token) {
-		this.token = token;
-	}
 	public Integer getShardIndex() {
 		return shardIndex;
 	}
