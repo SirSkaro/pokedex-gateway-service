@@ -2,19 +2,11 @@ package skaro.pokedex.gateway.messaging;
 
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-import java.util.UUID;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.amqp.core.MessagePostProcessor;
@@ -26,7 +18,7 @@ import discord4j.discordjson.json.MessageData;
 import discord4j.discordjson.json.UserData;
 import discord4j.discordjson.json.gateway.MessageCreate;
 import discord4j.discordjson.possible.Possible;
-import skaro.pokedex.sdk.messaging.DiscordTextEventMessage;
+import skaro.pokedex.sdk.messaging.discord.DiscordTextEventMessage;
 
 @ExtendWith(SpringExtension.class)
 public class MessageCreateDispatchPublisherTest {
@@ -53,14 +45,10 @@ public class MessageCreateDispatchPublisherTest {
 		String messageContent = randomUUID().toString();
 		String queueName = randomUUID().toString();
 		MessageCreate messageCreateEvent = mockMessageCreate(userId, guildId, channelId, messageContent);
-		ArgumentCaptor<DiscordTextEventMessage> captor = ArgumentCaptor.forClass(DiscordTextEventMessage.class);
 		
 		when(queue.getName()).thenReturn(queueName);
 		
-		publisher.publishEvent(messageCreateEvent).block();
-		
-		Mockito.verify(template).convertAndSend(eq(queueName), captor.capture(), any(MessagePostProcessor.class));
-		DiscordTextEventMessage queuedMessage = captor.getValue();
+		DiscordTextEventMessage queuedMessage = publisher.publishEvent(messageCreateEvent).block();
 		
 		assertEquals(userId, queuedMessage.getAuthorId());
 		assertEquals(guildId, queuedMessage.getGuildId());

@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import discord4j.discordjson.json.MessageData;
 import discord4j.discordjson.json.gateway.MessageCreate;
 import reactor.core.publisher.Mono;
-import skaro.pokedex.sdk.messaging.DiscordTextEventMessage;
+import skaro.pokedex.sdk.messaging.discord.DiscordTextEventMessage;
 
 @Service
-public class MessageCreateDispatchPublisher implements DispatchPublisher<MessageCreate> {
+public class MessageCreateDispatchPublisher implements DispatchPublisher<MessageCreate, DiscordTextEventMessage> {
 
 	private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	
@@ -30,14 +30,15 @@ public class MessageCreateDispatchPublisher implements DispatchPublisher<Message
 	}
 	
 	@Override
-	public Mono<Void> publishEvent(MessageCreate event) {
-		return Mono.fromRunnable(() -> queueMessageEvent(event.message()));
+	public Mono<DiscordTextEventMessage> publishEvent(MessageCreate event) {
+		return Mono.fromCallable(() -> queueMessageEvent(event.message()));
 	}
 	
-	private void queueMessageEvent(MessageData message) {
+	private DiscordTextEventMessage queueMessageEvent(MessageData message) {
 		DiscordTextEventMessage messageToQueue = toEventMessage(message);
 		template.convertAndSend(newMessageQueue.getName(), messageToQueue, postProcessor);
 		LOG.info("Send message: {}", messageToQueue.getContent());
+		return messageToQueue;
 	}
 	
 	private DiscordTextEventMessage toEventMessage(MessageData message) {
