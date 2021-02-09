@@ -59,6 +59,7 @@ public class MessageCreateDispatcherTest {
 		Mockito.when(gatewayClient.dispatch()).thenReturn(Flux.just(createEvent));
 
 		StepVerifier.create(dispatcher.dispatch())
+			.expectNextCount(0)
 			.expectComplete()
 			.verify();
 
@@ -82,6 +83,7 @@ public class MessageCreateDispatcherTest {
 		Mockito.when(gatewayClient.dispatch()).thenReturn(Flux.just(createEvent));
 
 		StepVerifier.create(dispatcher.dispatch())
+			.expectNextCount(0)
 			.expectComplete()
 			.verify();
 
@@ -105,6 +107,7 @@ public class MessageCreateDispatcherTest {
 		Mockito.when(gatewayClient.dispatch()).thenReturn(Flux.just(createEvent));
 
 		StepVerifier.create(dispatcher.dispatch())
+			.expectNextCount(0)
 			.expectComplete()
 			.verify();
 
