@@ -1,5 +1,6 @@
 package skaro.pokedex.gateway.dispatch;
 
+import static java.util.UUID.randomUUID;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -30,14 +31,14 @@ public class MessageCreateDispatcherTest {
 	private GatewayClient gatewayClient;
 	@Mock
 	private DispatchPublisher<MessageCreate, DiscordTextEventMessage> publisher;
-	
+
 	private MessageCreateDispatcher dispatcher;
-	
+
 	@BeforeEach
 	void setup() {
 		dispatcher = new MessageCreateDispatcher(gatewayClient, publisher);
 	}
-	
+
 	@Test
 	public void testDispatch() {
 		MessageCreate createEvent = mockMessageCreateFromUser(false);
@@ -45,47 +46,83 @@ public class MessageCreateDispatcherTest {
 		Mockito.when(gatewayClient.dispatch()).thenReturn(Flux.just(createEvent));
 		Mockito.when(publisher.publishEvent(ArgumentMatchers.any(MessageCreate.class)))
 			.thenReturn(Mono.just(queuedEventMessage));
-		
+
 		StepVerifier.create(dispatcher.dispatch())
 			.expectNext(queuedEventMessage)
 			.expectComplete()
 			.verify();
 	}
-	
+
 	@Test
 	public void testDispatch_userIdBot() {
 		MessageCreate createEvent = mockMessageCreateFromUser(true);
 		Mockito.when(gatewayClient.dispatch()).thenReturn(Flux.just(createEvent));
-		
+
 		StepVerifier.create(dispatcher.dispatch())
 			.expectComplete()
 			.verify();
-		
+
 		Mockito.verifyNoInteractions(publisher);
 	}
-	
+
 	@Test
 	public void testDispatch_mentionEveryone() {
-		
+		UserData authorData = Mockito.mock(UserData.class);
+		when(authorData.bot()).thenReturn(Possible.of(false));
+
+		MessageData messageData = Mockito.mock(MessageData.class);
+		when(messageData.author()).thenReturn(authorData);
+		when(messageData.mentionEveryone()).thenReturn(true);
+		when(messageData.mentionRoles()).thenReturn(List.of());
+
+		MessageCreate createEvent = MessageCreate.builder()
+				.message(messageData)
+				.build();
+
+		Mockito.when(gatewayClient.dispatch()).thenReturn(Flux.just(createEvent));
+
+		StepVerifier.create(dispatcher.dispatch())
+			.expectComplete()
+			.verify();
+
+		Mockito.verifyNoInteractions(publisher);
 	}
-	
+
 	@Test
 	public void testDispatch_mentionRole() {
-		
+		UserData authorData = Mockito.mock(UserData.class);
+		when(authorData.bot()).thenReturn(Possible.of(false));
+
+		MessageData messageData = Mockito.mock(MessageData.class);
+		when(messageData.author()).thenReturn(authorData);
+		when(messageData.mentionEveryone()).thenReturn(false);
+		when(messageData.mentionRoles()).thenReturn(List.of(randomUUID().toString()));
+
+		MessageCreate createEvent = MessageCreate.builder()
+				.message(messageData)
+				.build();
+
+		Mockito.when(gatewayClient.dispatch()).thenReturn(Flux.just(createEvent));
+
+		StepVerifier.create(dispatcher.dispatch())
+			.expectComplete()
+			.verify();
+
+		Mockito.verifyNoInteractions(publisher);
 	}
-	
+
 	private MessageCreate mockMessageCreateFromUser(boolean userIsBot) {
 		UserData authorData = Mockito.mock(UserData.class);
 		when(authorData.bot()).thenReturn(Possible.of(userIsBot));
-		
+
 		MessageData messageData = Mockito.mock(MessageData.class);
 		when(messageData.author()).thenReturn(authorData);
 		when(messageData.mentionEveryone()).thenReturn(false);
 		when(messageData.mentionRoles()).thenReturn(List.of());
-		
+
 		return MessageCreate.builder()
 				.message(messageData)
 				.build();
 	}
-	
+
 }
