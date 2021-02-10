@@ -1,4 +1,4 @@
-package skaro.pokedex.gateway.messaging;
+package skaro.pokedex.service.gateway.messaging;
 
 import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.core.MessagePostProcessor;

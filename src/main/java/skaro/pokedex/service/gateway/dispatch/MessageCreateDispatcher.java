@@ -1,4 +1,4 @@
-package skaro.pokedex.gateway.dispatch;
+package skaro.pokedex.service.gateway.dispatch;
 
 import static java.util.function.Predicate.not;
 
@@ -8,17 +8,16 @@ import discord4j.discordjson.json.MessageData;
 import discord4j.discordjson.json.gateway.MessageCreate;
 import discord4j.gateway.GatewayClient;
 import reactor.core.publisher.Flux;
-import skaro.pokedex.gateway.messaging.DispatchPublisher;
 import skaro.pokedex.sdk.messaging.discord.DiscordEventMessage;
-import skaro.pokedex.sdk.messaging.discord.DiscordTextEventMessage;
+import skaro.pokedex.service.gateway.messaging.DispatchPublisher;
 
 @Service
 public class MessageCreateDispatcher implements Dispatcher<MessageCreate> {
 
 	private GatewayClient gatewayClient;
-	private DispatchPublisher<MessageCreate, DiscordTextEventMessage> publisher;
+	private DispatchPublisher<MessageCreate> publisher;
 
-	public MessageCreateDispatcher(GatewayClient gatewayClient, DispatchPublisher<MessageCreate, DiscordTextEventMessage> publisher) {
+	public MessageCreateDispatcher(GatewayClient gatewayClient, DispatchPublisher<MessageCreate> publisher) {
 		this.gatewayClient = gatewayClient;
 		this.publisher = publisher;
 	}

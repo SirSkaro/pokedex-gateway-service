@@ -21,8 +21,9 @@ import discord4j.gateway.GatewayClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-import skaro.pokedex.gateway.messaging.DispatchPublisher;
 import skaro.pokedex.sdk.messaging.discord.DiscordTextEventMessage;
+import skaro.pokedex.service.gateway.dispatch.MessageCreateDispatcher;
+import skaro.pokedex.service.gateway.messaging.DispatchPublisher;
 
 @ExtendWith(SpringExtension.class)
 public class MessageCreateDispatcherTest {
@@ -30,7 +31,7 @@ public class MessageCreateDispatcherTest {
 	@Mock
 	private GatewayClient gatewayClient;
 	@Mock
-	private DispatchPublisher<MessageCreate, DiscordTextEventMessage> publisher;
+	private DispatchPublisher<MessageCreate> publisher;
 
 	private MessageCreateDispatcher dispatcher;
 

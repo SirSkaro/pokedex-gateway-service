@@ -1,4 +1,4 @@
-package skaro.pokedex.gateway.dispatch;
+package skaro.pokedex.service.gateway.dispatch;
 
 import discord4j.discordjson.json.gateway.Dispatch;
 import reactor.core.publisher.Flux;

@@ -1,4 +1,4 @@
-package skaro.pokedex.gateway;
+package skaro.pokedex.service.gateway;
 
 import java.lang.invoke.MethodHandles;
 

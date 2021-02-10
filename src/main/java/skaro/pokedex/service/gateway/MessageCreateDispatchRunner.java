@@ -1,4 +1,4 @@
-package skaro.pokedex.gateway;
+package skaro.pokedex.service.gateway;
 
 import java.lang.invoke.MethodHandles;
 
@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 import discord4j.discordjson.json.gateway.MessageCreate;
 import reactor.core.publisher.Mono;
-import skaro.pokedex.gateway.dispatch.Dispatcher;
 import skaro.pokedex.sdk.messaging.discord.DiscordEventMessage;
+import skaro.pokedex.service.gateway.dispatch.Dispatcher;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)

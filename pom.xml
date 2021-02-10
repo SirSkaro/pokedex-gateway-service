@@ -9,7 +9,7 @@
 		<version>2.4.2</version>
 		<relativePath />
 	</parent>
-	<groupId>skaro.pokedex</groupId>
+	<groupId>skaro.pokedex.service</groupId>
 	<artifactId>gateway-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>gateway-service</name>

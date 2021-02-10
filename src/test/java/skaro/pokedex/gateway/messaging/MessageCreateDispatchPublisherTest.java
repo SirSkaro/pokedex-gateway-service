@@ -19,6 +19,7 @@ import discord4j.discordjson.json.UserData;
 import discord4j.discordjson.json.gateway.MessageCreate;
 import discord4j.discordjson.possible.Possible;
 import skaro.pokedex.sdk.messaging.discord.DiscordTextEventMessage;
+import skaro.pokedex.service.gateway.messaging.MessageCreateDispatchPublisher;
 
 @ExtendWith(SpringExtension.class)
 public class MessageCreateDispatchPublisherTest {
@@ -48,7 +49,7 @@ public class MessageCreateDispatchPublisherTest {
 		
 		when(queue.getName()).thenReturn(queueName);
 		
-		DiscordTextEventMessage queuedMessage = publisher.publishEvent(messageCreateEvent).block();
+		DiscordTextEventMessage queuedMessage = (DiscordTextEventMessage)publisher.publishEvent(messageCreateEvent).block();
 		
 		assertEquals(userId, queuedMessage.getAuthorId());
 		assertEquals(guildId, queuedMessage.getGuildId());
