@@ -4,8 +4,8 @@ import discord4j.discordjson.json.gateway.Dispatch;
 import reactor.core.publisher.Mono;
 import skaro.pokedex.sdk.messaging.discord.DiscordEventMessage;
 
-public interface DispatchPublisher<T extends Dispatch> {
+public interface DispatchMessageSender<T extends Dispatch> {
 	
-	Mono<DiscordEventMessage> publishEvent(T event);
+	Mono<DiscordEventMessage> sendEvent(T event);
 	
 }

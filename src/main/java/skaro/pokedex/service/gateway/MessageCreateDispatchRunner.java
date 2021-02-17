@@ -34,7 +34,7 @@ public class MessageCreateDispatchRunner implements CommandLineRunner {
 	}
 	
 	private Mono<DiscordEventMessage> handleError(Throwable error) {
-		LOG.error("Error in consuming dispatch: {}", error);
+		LOG.error("Error in consuming dispatch", error);
 		return Mono.empty();
 	}
 

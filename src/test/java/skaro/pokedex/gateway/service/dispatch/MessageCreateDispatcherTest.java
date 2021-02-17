@@ -1,4 +1,4 @@
-package skaro.pokedex.gateway.dispatch;
+package skaro.pokedex.gateway.service.dispatch;
 
 import static java.util.UUID.randomUUID;
 import static org.mockito.Mockito.when;
@@ -23,7 +23,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 import skaro.pokedex.sdk.messaging.discord.DiscordTextEventMessage;
 import skaro.pokedex.service.gateway.dispatch.MessageCreateDispatcher;
-import skaro.pokedex.service.gateway.messaging.DispatchPublisher;
+import skaro.pokedex.service.gateway.messaging.DispatchMessageSender;
 
 @ExtendWith(SpringExtension.class)
 public class MessageCreateDispatcherTest {
@@ -31,7 +31,7 @@ public class MessageCreateDispatcherTest {
 	@Mock
 	private GatewayClient gatewayClient;
 	@Mock
-	private DispatchPublisher<MessageCreate> publisher;
+	private DispatchMessageSender<MessageCreate> publisher;
 
 	private MessageCreateDispatcher dispatcher;
 
@@ -45,7 +45,7 @@ public class MessageCreateDispatcherTest {
 		MessageCreate createEvent = mockMessageCreateFromUser(false);
 		DiscordTextEventMessage queuedEventMessage = new DiscordTextEventMessage();
 		Mockito.when(gatewayClient.dispatch()).thenReturn(Flux.just(createEvent));
-		Mockito.when(publisher.publishEvent(ArgumentMatchers.any(MessageCreate.class)))
+		Mockito.when(publisher.sendEvent(ArgumentMatchers.any(MessageCreate.class)))
 			.thenReturn(Mono.just(queuedEventMessage));
 
 		StepVerifier.create(dispatcher.dispatch())
@@ -76,6 +76,7 @@ public class MessageCreateDispatcherTest {
 		when(messageData.author()).thenReturn(authorData);
 		when(messageData.mentionEveryone()).thenReturn(true);
 		when(messageData.mentionRoles()).thenReturn(List.of());
+		when(messageData.content()).thenReturn("content");
 
 		MessageCreate createEvent = MessageCreate.builder()
 				.message(messageData)
@@ -90,6 +91,31 @@ public class MessageCreateDispatcherTest {
 
 		Mockito.verifyNoInteractions(publisher);
 	}
+	
+	@Test
+	public void testDispatch_noContent() {
+		UserData authorData = Mockito.mock(UserData.class);
+		when(authorData.bot()).thenReturn(Possible.of(false));
+		
+		MessageData messageData = Mockito.mock(MessageData.class);
+		when(messageData.author()).thenReturn(authorData);
+		when(messageData.mentionEveryone()).thenReturn(false);
+		when(messageData.mentionRoles()).thenReturn(List.of());
+		when(messageData.content()).thenReturn("");
+		
+		MessageCreate createEvent = MessageCreate.builder()
+				.message(messageData)
+				.build();
+		
+		Mockito.when(gatewayClient.dispatch()).thenReturn(Flux.just(createEvent));
+		
+		StepVerifier.create(dispatcher.dispatch())
+			.expectNextCount(0)
+			.expectComplete()
+			.verify();
+		
+		Mockito.verifyNoInteractions(publisher);
+	}
 
 	@Test
 	public void testDispatch_mentionRole() {
@@ -100,6 +126,7 @@ public class MessageCreateDispatcherTest {
 		when(messageData.author()).thenReturn(authorData);
 		when(messageData.mentionEveryone()).thenReturn(false);
 		when(messageData.mentionRoles()).thenReturn(List.of(randomUUID().toString()));
+		when(messageData.content()).thenReturn("content");
 
 		MessageCreate createEvent = MessageCreate.builder()
 				.message(messageData)
@@ -123,6 +150,7 @@ public class MessageCreateDispatcherTest {
 		when(messageData.author()).thenReturn(authorData);
 		when(messageData.mentionEveryone()).thenReturn(false);
 		when(messageData.mentionRoles()).thenReturn(List.of());
+		when(messageData.content()).thenReturn("foo");
 
 		return MessageCreate.builder()
 				.message(messageData)

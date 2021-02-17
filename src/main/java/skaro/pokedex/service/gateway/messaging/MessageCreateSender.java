@@ -16,7 +16,7 @@ import skaro.pokedex.sdk.messaging.discord.DiscordEventMessage;
 import skaro.pokedex.sdk.messaging.discord.DiscordTextEventMessage;
 
 @Service
-public class MessageCreateDispatchPublisher implements DispatchPublisher<MessageCreate> {
+public class MessageCreateSender implements DispatchMessageSender<MessageCreate> {
 
 	private final static Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 	
@@ -24,14 +24,14 @@ public class MessageCreateDispatchPublisher implements DispatchPublisher<Message
 	private Queue newMessageQueue;
 	private MessagePostProcessor postProcessor;
 	
-	public MessageCreateDispatchPublisher(RabbitTemplate template, Queue newMessageQueue, MessagePostProcessor postProcessor) {
+	public MessageCreateSender(RabbitTemplate template, Queue newMessageQueue, MessagePostProcessor postProcessor) {
 		this.template = template;
 		this.newMessageQueue = newMessageQueue;
 		this.postProcessor = postProcessor;
 	}
 	
 	@Override
-	public Mono<DiscordEventMessage> publishEvent(MessageCreate event) {
+	public Mono<DiscordEventMessage> sendEvent(MessageCreate event) {
 		return Mono.fromCallable(() -> queueMessageEvent(event.message()));
 	}
 	

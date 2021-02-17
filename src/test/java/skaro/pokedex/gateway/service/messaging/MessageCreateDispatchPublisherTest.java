@@ -1,4 +1,4 @@
-package skaro.pokedex.gateway.messaging;
+package skaro.pokedex.gateway.service.messaging;
 
 import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +19,7 @@ import discord4j.discordjson.json.UserData;
 import discord4j.discordjson.json.gateway.MessageCreate;
 import discord4j.discordjson.possible.Possible;
 import skaro.pokedex.sdk.messaging.discord.DiscordTextEventMessage;
-import skaro.pokedex.service.gateway.messaging.MessageCreateDispatchPublisher;
+import skaro.pokedex.service.gateway.messaging.MessageCreateSender;
 
 @ExtendWith(SpringExtension.class)
 public class MessageCreateDispatchPublisherTest {
@@ -31,11 +31,11 @@ public class MessageCreateDispatchPublisherTest {
 	@Mock 
 	MessagePostProcessor postProcessor;
 	
-	private MessageCreateDispatchPublisher publisher;
+	private MessageCreateSender publisher;
 	
 	@BeforeEach
 	void setup() {
-		publisher = new MessageCreateDispatchPublisher(template, queue, postProcessor);
+		publisher = new MessageCreateSender(template, queue, postProcessor);
 	}
 	
 	@Test
@@ -49,7 +49,7 @@ public class MessageCreateDispatchPublisherTest {
 		
 		when(queue.getName()).thenReturn(queueName);
 		
-		DiscordTextEventMessage queuedMessage = (DiscordTextEventMessage)publisher.publishEvent(messageCreateEvent).block();
+		DiscordTextEventMessage queuedMessage = (DiscordTextEventMessage)publisher.sendEvent(messageCreateEvent).block();
 		
 		assertEquals(userId, queuedMessage.getAuthorId());
 		assertEquals(guildId, queuedMessage.getGuildId());

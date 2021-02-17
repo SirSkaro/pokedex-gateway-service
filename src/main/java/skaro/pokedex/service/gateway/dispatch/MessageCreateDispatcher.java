@@ -9,17 +9,17 @@ import discord4j.discordjson.json.gateway.MessageCreate;
 import discord4j.gateway.GatewayClient;
 import reactor.core.publisher.Flux;
 import skaro.pokedex.sdk.messaging.discord.DiscordEventMessage;
-import skaro.pokedex.service.gateway.messaging.DispatchPublisher;
+import skaro.pokedex.service.gateway.messaging.DispatchMessageSender;
 
 @Service
 public class MessageCreateDispatcher implements Dispatcher<MessageCreate> {
 
 	private GatewayClient gatewayClient;
-	private DispatchPublisher<MessageCreate> publisher;
+	private DispatchMessageSender<MessageCreate> sender;
 
-	public MessageCreateDispatcher(GatewayClient gatewayClient, DispatchPublisher<MessageCreate> publisher) {
+	public MessageCreateDispatcher(GatewayClient gatewayClient, DispatchMessageSender<MessageCreate> sender) {
 		this.gatewayClient = gatewayClient;
-		this.publisher = publisher;
+		this.sender = sender;
 	}
 
 	@Override
@@ -27,8 +27,9 @@ public class MessageCreateDispatcher implements Dispatcher<MessageCreate> {
 		return gatewayClient.dispatch()
 				.ofType(MessageCreate.class)
 				.filter(not(this::userIsBot))
+				.filter(not(this::messageContentIsEmpty))
 				.filter(not(this::hasMentions))
-				.flatMap(publisher::publishEvent);
+				.flatMap(sender::sendEvent);
 	}
 
 	private boolean userIsBot(MessageCreate messageCreateEvent) {
@@ -39,10 +40,13 @@ public class MessageCreateDispatcher implements Dispatcher<MessageCreate> {
 				.orElse(false);
 	}
 
+	private boolean messageContentIsEmpty(MessageCreate messageCreateEvent) {
+		return messageCreateEvent.message().content().isBlank();
+	}
+	
 	private boolean hasMentions(MessageCreate messageCreateEvent) {
 		MessageData message = messageCreateEvent.message();
 		return message.mentionEveryone() || !message.mentionRoles().isEmpty();
 	}
-
 
 }

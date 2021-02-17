@@ -39,9 +39,7 @@ public class GatewayConfiguration {
 	public GatewayOptions getGatewayOptions(DiscordGatewayConfigurationProperties discordConfig) {
 		ReactorResources reactorResources = ReactorResources.create();
         GatewayReactorResources gatewayReactorResources = new GatewayReactorResources(reactorResources);
-        JacksonResources jacksonResources = JacksonResources.create();
-
-        ObjectMapper objectMapper = jacksonResources.getObjectMapper();
+        ObjectMapper objectMapper = JacksonResources.create().getObjectMapper();
 
         PayloadWriter payloadWriter = new JacksonPayloadWriter(objectMapper);
         PayloadReader payloadReader = new JacksonPayloadReader(objectMapper);
