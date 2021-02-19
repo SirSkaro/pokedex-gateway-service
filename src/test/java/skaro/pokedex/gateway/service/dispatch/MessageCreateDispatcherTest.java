@@ -36,7 +36,7 @@ public class MessageCreateDispatcherTest {
 	private MessageCreateDispatcher dispatcher;
 
 	@BeforeEach
-	void setup() {
+	public void setup() {
 		dispatcher = new MessageCreateDispatcher(gatewayClient, publisher);
 	}
 

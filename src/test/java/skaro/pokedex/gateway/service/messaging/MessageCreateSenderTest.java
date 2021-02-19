@@ -22,7 +22,7 @@ import skaro.pokedex.sdk.messaging.discord.DiscordTextEventMessage;
 import skaro.pokedex.service.gateway.messaging.MessageCreateSender;
 
 @ExtendWith(SpringExtension.class)
-public class MessageCreateDispatchPublisherTest {
+public class MessageCreateSenderTest {
 
 	@Mock
 	private RabbitTemplate template;
