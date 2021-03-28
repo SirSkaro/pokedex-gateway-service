@@ -2,7 +2,7 @@ package skaro.pokedex.service.gateway.messaging;
 
 import discord4j.discordjson.json.gateway.Dispatch;
 import reactor.core.publisher.Mono;
-import skaro.pokedex.sdk.messaging.discord.DiscordEventMessage;
+import skaro.pokedex.sdk.messaging.gateway.DiscordEventMessage;
 
 public interface DispatchMessageSender<T extends Dispatch> {
 	

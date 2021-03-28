@@ -8,7 +8,7 @@ import discord4j.discordjson.json.MessageData;
 import discord4j.discordjson.json.gateway.MessageCreate;
 import discord4j.gateway.GatewayClient;
 import reactor.core.publisher.Flux;
-import skaro.pokedex.sdk.messaging.discord.DiscordEventMessage;
+import skaro.pokedex.sdk.messaging.gateway.DiscordEventMessage;
 import skaro.pokedex.service.gateway.messaging.DispatchMessageSender;
 
 @Service

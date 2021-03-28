@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import discord4j.discordjson.json.MessageData;
 import discord4j.discordjson.json.gateway.MessageCreate;
 import reactor.core.publisher.Mono;
-import skaro.pokedex.sdk.messaging.discord.DiscordEventMessage;
-import skaro.pokedex.sdk.messaging.discord.DiscordTextEventMessage;
+import skaro.pokedex.sdk.messaging.gateway.DiscordEventMessage;
+import skaro.pokedex.sdk.messaging.gateway.DiscordTextEventMessage;
 
 @Service
 public class MessageCreateSender implements DispatchMessageSender<MessageCreate> {

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import discord4j.discordjson.json.gateway.MessageCreate;
 import reactor.core.publisher.Mono;
-import skaro.pokedex.sdk.messaging.discord.DiscordEventMessage;
+import skaro.pokedex.sdk.messaging.gateway.DiscordEventMessage;
 import skaro.pokedex.service.gateway.dispatch.Dispatcher;
 
 @Component

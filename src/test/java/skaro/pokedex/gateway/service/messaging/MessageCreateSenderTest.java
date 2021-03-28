@@ -18,7 +18,7 @@ import discord4j.discordjson.json.MessageData;
 import discord4j.discordjson.json.UserData;
 import discord4j.discordjson.json.gateway.MessageCreate;
 import discord4j.discordjson.possible.Possible;
-import skaro.pokedex.sdk.messaging.discord.DiscordTextEventMessage;
+import skaro.pokedex.sdk.messaging.gateway.DiscordTextEventMessage;
 import skaro.pokedex.service.gateway.messaging.MessageCreateSender;
 
 @ExtendWith(SpringExtension.class)
