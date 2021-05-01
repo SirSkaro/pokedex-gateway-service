@@ -3,6 +3,7 @@ package skaro.pokedex.gateway.service.dispatch;
 import static java.util.UUID.randomUUID;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -31,13 +32,13 @@ public class MessageCreateDispatcherTest {
 	@Mock
 	private GatewayClient gatewayClient;
 	@Mock
-	private DispatchMessageSender<MessageCreate> publisher;
+	private DispatchMessageSender<MessageCreate> sender;
 
 	private MessageCreateDispatcher dispatcher;
 
 	@BeforeEach
 	public void setup() {
-		dispatcher = new MessageCreateDispatcher(gatewayClient, publisher);
+		dispatcher = new MessageCreateDispatcher(gatewayClient, sender);
 	}
 
 	@Test
@@ -45,7 +46,7 @@ public class MessageCreateDispatcherTest {
 		MessageCreate createEvent = mockMessageCreateFromUser(false);
 		DiscordTextEventMessage queuedEventMessage = new DiscordTextEventMessage();
 		Mockito.when(gatewayClient.dispatch()).thenReturn(Flux.just(createEvent));
-		Mockito.when(publisher.sendEvent(ArgumentMatchers.any(MessageCreate.class)))
+		Mockito.when(sender.sendEvent(ArgumentMatchers.any(MessageCreate.class)))
 			.thenReturn(Mono.just(queuedEventMessage));
 
 		StepVerifier.create(dispatcher.dispatch())
@@ -64,7 +65,7 @@ public class MessageCreateDispatcherTest {
 			.expectComplete()
 			.verify();
 
-		Mockito.verifyNoInteractions(publisher);
+		Mockito.verifyNoInteractions(sender);
 	}
 
 	@Test
@@ -89,7 +90,7 @@ public class MessageCreateDispatcherTest {
 			.expectComplete()
 			.verify();
 
-		Mockito.verifyNoInteractions(publisher);
+		Mockito.verifyNoInteractions(sender);
 	}
 	
 	@Test
@@ -114,7 +115,7 @@ public class MessageCreateDispatcherTest {
 			.expectComplete()
 			.verify();
 		
-		Mockito.verifyNoInteractions(publisher);
+		Mockito.verifyNoInteractions(sender);
 	}
 
 	@Test
@@ -139,7 +140,19 @@ public class MessageCreateDispatcherTest {
 			.expectComplete()
 			.verify();
 
-		Mockito.verifyNoInteractions(publisher);
+		Mockito.verifyNoInteractions(sender);
+	}
+	
+	@Test
+	public void testDispatch_continueOnSendingError() {
+		MessageCreate createEvent = mockMessageCreateFromUser(false);
+		Mockito.when(gatewayClient.dispatch()).thenReturn(Flux.just(createEvent));
+		Mockito.when(sender.sendEvent(ArgumentMatchers.any(MessageCreate.class)))
+			.thenReturn(Mono.error(new IOException()));
+
+		StepVerifier.create(dispatcher.dispatch())
+			.expectComplete()
+			.verify();
 	}
 
 	private MessageCreate mockMessageCreateFromUser(boolean userIsBot) {
