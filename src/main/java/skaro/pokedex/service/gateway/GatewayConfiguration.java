@@ -23,7 +23,7 @@ import discord4j.gateway.payload.JacksonPayloadReader;
 import discord4j.gateway.payload.JacksonPayloadWriter;
 import discord4j.gateway.payload.PayloadReader;
 import discord4j.gateway.payload.PayloadWriter;
-import skaro.pokedex.sdk.DiscordConfigurationProperties;
+import skaro.pokedex.sdk.discord.DiscordConfigurationProperties;
 
 @Configuration
 public class GatewayConfiguration {

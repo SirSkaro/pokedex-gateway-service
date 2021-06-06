@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
-import skaro.pokedex.sdk.DiscordConfigurationProperties;
+import skaro.pokedex.sdk.discord.DiscordConfigurationProperties;
 
 public class DiscordGatewayConfigurationProperties extends DiscordConfigurationProperties {
 	@NotNull
